@@ -363,6 +363,7 @@
           console.error('Cannot get document that contains the element.');
           return null;
       }
+     var docY = doc.getElementById('matchingContainer');
       if (element.compareDocumentPosition(doc) & Node.DOCUMENT_POSITION_DISCONNECTED) {
           console.error('A disconnected element was passed.');
           return null;
@@ -370,22 +371,21 @@
 
       rect = element.getBoundingClientRect();
       for (prop in rect) { bBox[prop] = rect[prop]; } // eslint-disable-line guard-for-in
-
+      
       if (!relWindow) {
           if (!(win = doc.defaultView)) {
               console.error('Cannot get window that contains the element.');
               return null;
           }
-          bBox.left += win.pageXOffset;
-          bBox.right += win.pageXOffset;
-          bBox.top += win.pageYOffset;
-          bBox.bottom += win.pageYOffset;
+          bBox.left = element.offsetLeft;
+          bBox.right = element.offsetLeft + element.offsetWidth;
+          bBox.top = element.offsetTop;
+          bBox.bottom = element.offsetTop + element.offsetHeight;
       }
 
       return bBox;
   }
-  window.getBBox = getBBox; // [DEBUG/]
-
+  baseDocument.getElementById('matchingContainer').getBBox = getBBox; // [DEBUG/]
   /**
    * Get distance between an element's bounding-box and its content (`<iframe>` element and its document).
    * @param {Element} element - Target element.
@@ -455,8 +455,7 @@
       bBox.bottom += top;
       return bBox;
   }
-  window.getBBoxNest = getBBoxNest; // [DEBUG/]
-
+  baseDocument.getElementById('matchingContainer').getBBoxNest = getBBoxNest; // [DEBUG/]
   /**
    * Get a common ancestor window.
    * @param {Element} elm1 - A contained element.
@@ -483,13 +482,13 @@
       }
       return commonWindow || window;
   }
-  window.getCommonWindow = getCommonWindow; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer').getCommonWindow = getCommonWindow; // [DEBUG/]
 
   function getPointsLength(p0, p1) {
       var lx = p0.x - p1.x, ly = p0.y - p1.y;
       return Math.sqrt(lx * lx + ly * ly);
   }
-  window.getPointsLength = getPointsLength; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer').getPointsLength = getPointsLength; // [DEBUG/]
 
   function getPointOnLine(p0, p1, r) {
       var xA = p1.x - p0.x, yA = p1.y - p0.y;
@@ -499,7 +498,7 @@
           angle: Math.atan2(yA, xA) / (Math.PI / 180)
       };
   }
-  window.getPointOnLine = getPointOnLine; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer').getPointOnLine = getPointOnLine; // [DEBUG/]
 
   function getIntersection(line1P0, line1P1, line2P0, line2P1) {
       var sx1 = line1P1.x - line1P0.x, sy1 = line1P1.y - line1P0.y,
@@ -510,13 +509,13 @@
       return s >= 0 && s <= 1 && t >= 0 && t <= 1 ?
           { x: line1P0.x + (t * sx1), y: line1P0.y + (t * sy1) } : null;
   }
-  window.getIntersection = getIntersection; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer').getIntersection = getIntersection; // [DEBUG/]
 
   function extendLine(p0, p1, len) {
       var angle = Math.atan2(p0.y - p1.y, p1.x - p0.x);
       return { x: p1.x + Math.cos(angle) * len, y: p1.y + Math.sin(angle) * len * -1 };
   }
-  window.extendLine = extendLine; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer').extendLine = extendLine; // [DEBUG/]
 
   function getPointOnCubic(p0, p1, p2, p3, t) {
       var
@@ -551,7 +550,7 @@
       };
       /* eslint-enable key-spacing */
   }
-  window.getPointOnCubic = getPointOnCubic; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer').getPointOnCubic = getPointOnCubic; // [DEBUG/]
 
   function getCubicLength(p0, p1, p2, p3, t) {
       function base3(t, p0v, p1v, p2v, p3v) {
@@ -577,7 +576,7 @@
       });
       return z2 * sum;
   }
-  window.getCubicLength = getCubicLength; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer').getCubicLength = getCubicLength; // [DEBUG/]
 
   function getCubicT(p0, p1, p2, p3, len) {
       var E = 0.01,
@@ -590,7 +589,7 @@
       }
       return t2;
   }
-  window.getCubicT = getCubicT; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer').getCubicT = getCubicT; // [DEBUG/]
 
   function getOffsetLine(p0, p1, offsetLen) {
       var angle = Math.atan2(p0.y - p1.y, p1.x - p0.x) + Math.PI * 0.5;
@@ -599,7 +598,7 @@
           { x: p1.x + Math.cos(angle) * offsetLen, y: p1.y + Math.sin(angle) * offsetLen * -1 }
       ];
   }
-  window.getOffsetLine = getOffsetLine; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer').getOffsetLine = getOffsetLine; // [DEBUG/]
 
   function getOffsetCubic(p0, p1, p2, p3, offsetLen, stepLen) {
       var parts = getCubicLength(p0, p1, p2, p3) / stepLen,
@@ -619,7 +618,7 @@
       }
       return points;
   }
-  window.getOffsetCubic = getOffsetCubic; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer').getOffsetCubic = getOffsetCubic; // [DEBUG/]
 
   function pathList2PathData(pathList, cbPoint) {
       var pathData;
@@ -638,7 +637,7 @@
       });
       return pathData;
   }
-  window.pathList2PathData = pathList2PathData; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer').pathList2PathData = pathList2PathData; // [DEBUG/]
 
   function getAllPathListLen(pathList) {
       var pathSegsLen = [], pathLenAll = 0;
@@ -678,7 +677,7 @@
           return pathLenAll;
       }, 0);
   }
-  window.getAllPathDataLen = getAllPathDataLen; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer').getAllPathDataLen = getAllPathDataLen; // [DEBUG/]
 
   function pathDataHasChanged(a, b) {
       return a == null || b == null ||
@@ -688,7 +687,7 @@
                   aSeg.values.some(function (aSegValue, i) { return aSegValue !== bSeg.values[i]; });
           });
   }
-  window.pathDataHasChanged = pathDataHasChanged; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer').pathDataHasChanged = pathDataHasChanged; // [DEBUG/]
 
   function bBox2PathData(bBox) {
       var right = bBox.right != null ? bBox.right : bBox.left + bBox.width,
@@ -737,7 +736,7 @@
           parent.insertBefore(parent.removeChild(target), next);
       }, 0);
   }
-  window.forceReflow = forceReflow; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer').forceReflow = forceReflow; // [DEBUG/]
 
   function forceReflowAdd(props, target) {
       if (props.reflowTargets.indexOf(target) < 0) { props.reflowTargets.push(target); }
@@ -846,7 +845,7 @@
       }
       return dropShadow;
   }
-  window.newDropShadow = newDropShadow; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer').newDropShadow = newDropShadow; // [DEBUG/]
 
   function initStats(container, statsConf) {
       Object.keys(statsConf).forEach(function (statName) {
@@ -1125,7 +1124,7 @@
 
       traceLog.add('</bindWindow>'); // [DEBUG/]
   }
-  window.bindWindow = bindWindow; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer').bindWindow = bindWindow; // [DEBUG/]
 
   /**
    * @param {props} props - `props` of `LeaderLine` instance.
@@ -1169,7 +1168,6 @@
       /* [DEBUG] */, null, 'plug_colorTraSE[' + i + ']=%s'/* [/DEBUG] */) || updated;
 
           if (plugId !== PLUG_BEHIND) { // Not depend on `curStats.plug_enabledSE`
-              console.log(SYMBOLS);
               symbolConf = SYMBOLS[PLUG_2_SYMBOL[plugId]];
               plugMarkerWidth = width = symbolConf.widthR * options.plugSizeSE[i];
               plugMarkerHeight = height = symbolConf.heightR * options.plugSizeSE[i];
