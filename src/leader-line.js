@@ -39,6 +39,8 @@
    * @property {(string|number[])} timing - FUNC_KEYS or [x1, y1, x2, y2]
    */
 
+    var instance;
+
   var
       APP_ID = 'leader-line',
       SOCKET_TOP = 1, SOCKET_RIGHT = 2, SOCKET_BOTTOM = 3, SOCKET_LEFT = 4,
@@ -363,7 +365,7 @@
           console.error('Cannot get document that contains the element.');
           return null;
       }
-     var docY = doc.getElementById('matchingContainer');
+     var docY = doc.getElementById('matchingContainer' + instance);
       if (element.compareDocumentPosition(doc) & Node.DOCUMENT_POSITION_DISCONNECTED) {
           console.error('A disconnected element was passed.');
           return null;
@@ -385,7 +387,7 @@
 
       return bBox;
   }
-  baseDocument.getElementById('matchingContainer').getBBox = getBBox; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer' + instance).getBBox = getBBox; // [DEBUG/]
   /**
    * Get distance between an element's bounding-box and its content (`<iframe>` element and its document).
    * @param {Element} element - Target element.
@@ -455,7 +457,7 @@
       bBox.bottom += top;
       return bBox;
   }
-  baseDocument.getElementById('matchingContainer').getBBoxNest = getBBoxNest; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer' + instance).getBBoxNest = getBBoxNest; // [DEBUG/]
   /**
    * Get a common ancestor window.
    * @param {Element} elm1 - A contained element.
@@ -482,13 +484,13 @@
       }
       return commonWindow || window;
   }
-  baseDocument.getElementById('matchingContainer').getCommonWindow = getCommonWindow; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer' + instance).getCommonWindow = getCommonWindow; // [DEBUG/]
 
   function getPointsLength(p0, p1) {
       var lx = p0.x - p1.x, ly = p0.y - p1.y;
       return Math.sqrt(lx * lx + ly * ly);
   }
-  baseDocument.getElementById('matchingContainer').getPointsLength = getPointsLength; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer' + instance).getPointsLength = getPointsLength; // [DEBUG/]
 
   function getPointOnLine(p0, p1, r) {
       var xA = p1.x - p0.x, yA = p1.y - p0.y;
@@ -498,7 +500,7 @@
           angle: Math.atan2(yA, xA) / (Math.PI / 180)
       };
   }
-  baseDocument.getElementById('matchingContainer').getPointOnLine = getPointOnLine; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer' + instance).getPointOnLine = getPointOnLine; // [DEBUG/]
 
   function getIntersection(line1P0, line1P1, line2P0, line2P1) {
       var sx1 = line1P1.x - line1P0.x, sy1 = line1P1.y - line1P0.y,
@@ -509,13 +511,13 @@
       return s >= 0 && s <= 1 && t >= 0 && t <= 1 ?
           { x: line1P0.x + (t * sx1), y: line1P0.y + (t * sy1) } : null;
   }
-  baseDocument.getElementById('matchingContainer').getIntersection = getIntersection; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer' + instance).getIntersection = getIntersection; // [DEBUG/]
 
   function extendLine(p0, p1, len) {
       var angle = Math.atan2(p0.y - p1.y, p1.x - p0.x);
       return { x: p1.x + Math.cos(angle) * len, y: p1.y + Math.sin(angle) * len * -1 };
   }
-  baseDocument.getElementById('matchingContainer').extendLine = extendLine; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer' + instance).extendLine = extendLine; // [DEBUG/]
 
   function getPointOnCubic(p0, p1, p2, p3, t) {
       var
@@ -550,7 +552,7 @@
       };
       /* eslint-enable key-spacing */
   }
-  baseDocument.getElementById('matchingContainer').getPointOnCubic = getPointOnCubic; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer' + instance).getPointOnCubic = getPointOnCubic; // [DEBUG/]
 
   function getCubicLength(p0, p1, p2, p3, t) {
       function base3(t, p0v, p1v, p2v, p3v) {
@@ -576,7 +578,7 @@
       });
       return z2 * sum;
   }
-  baseDocument.getElementById('matchingContainer').getCubicLength = getCubicLength; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer' + instance).getCubicLength = getCubicLength; // [DEBUG/]
 
   function getCubicT(p0, p1, p2, p3, len) {
       var E = 0.01,
@@ -589,7 +591,7 @@
       }
       return t2;
   }
-  baseDocument.getElementById('matchingContainer').getCubicT = getCubicT; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer' + instance).getCubicT = getCubicT; // [DEBUG/]
 
   function getOffsetLine(p0, p1, offsetLen) {
       var angle = Math.atan2(p0.y - p1.y, p1.x - p0.x) + Math.PI * 0.5;
@@ -598,7 +600,7 @@
           { x: p1.x + Math.cos(angle) * offsetLen, y: p1.y + Math.sin(angle) * offsetLen * -1 }
       ];
   }
-  baseDocument.getElementById('matchingContainer').getOffsetLine = getOffsetLine; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer' + instance).getOffsetLine = getOffsetLine; // [DEBUG/]
 
   function getOffsetCubic(p0, p1, p2, p3, offsetLen, stepLen) {
       var parts = getCubicLength(p0, p1, p2, p3) / stepLen,
@@ -618,7 +620,7 @@
       }
       return points;
   }
-  baseDocument.getElementById('matchingContainer').getOffsetCubic = getOffsetCubic; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer' + instance).getOffsetCubic = getOffsetCubic; // [DEBUG/]
 
   function pathList2PathData(pathList, cbPoint) {
       var pathData;
@@ -637,7 +639,7 @@
       });
       return pathData;
   }
-  baseDocument.getElementById('matchingContainer').pathList2PathData = pathList2PathData; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer' + instance).pathList2PathData = pathList2PathData; // [DEBUG/]
 
   function getAllPathListLen(pathList) {
       var pathSegsLen = [], pathLenAll = 0;
@@ -677,7 +679,7 @@
           return pathLenAll;
       }, 0);
   }
-  baseDocument.getElementById('matchingContainer').getAllPathDataLen = getAllPathDataLen; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer' + instance).getAllPathDataLen = getAllPathDataLen; // [DEBUG/]
 
   function pathDataHasChanged(a, b) {
       return a == null || b == null ||
@@ -687,7 +689,7 @@
                   aSeg.values.some(function (aSegValue, i) { return aSegValue !== bSeg.values[i]; });
           });
   }
-  baseDocument.getElementById('matchingContainer').pathDataHasChanged = pathDataHasChanged; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer' + instance).pathDataHasChanged = pathDataHasChanged; // [DEBUG/]
 
   function bBox2PathData(bBox) {
       var right = bBox.right != null ? bBox.right : bBox.left + bBox.width,
@@ -736,7 +738,7 @@
           parent.insertBefore(parent.removeChild(target), next);
       }, 0);
   }
-  baseDocument.getElementById('matchingContainer').forceReflow = forceReflow; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer' + instance).forceReflow = forceReflow; // [DEBUG/]
 
   function forceReflowAdd(props, target) {
       if (props.reflowTargets.indexOf(target) < 0) { props.reflowTargets.push(target); }
@@ -845,7 +847,7 @@
       }
       return dropShadow;
   }
-  baseDocument.getElementById('matchingContainer').newDropShadow = newDropShadow; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer' + instance).newDropShadow = newDropShadow; // [DEBUG/]
 
   function initStats(container, statsConf) {
       Object.keys(statsConf).forEach(function (statName) {
@@ -880,7 +882,7 @@
 
       var baseDocument = window.document,
           stylesHtml = window.getComputedStyle(baseDocument.documentElement, ''),
-          stylesBody = window.getComputedStyle(baseDocument.getElementById('matchingContainer'), ''),
+          stylesBody = window.getComputedStyle(baseDocument.getElementById('matchingContainer' + instance)),
           bodyOffset = { x: 0, y: 0 };
 
       if (stylesBody.position !== 'static') {
@@ -907,7 +909,8 @@
       var baseDocument = window.document, defsSvg;
       if (!baseDocument.getElementById(DEFS_ID)) { // Add svg defs
           defsSvg = (new window.DOMParser()).parseFromString(DEFS_HTML, 'image/svg+xml');
-          baseDocument.getElementById('matchingContainer').appendChild(defsSvg.documentElement);
+          console.log('matching' + instance);
+          baseDocument.getElementById('matchingContainer' + instance).appendChild(defsSvg.documentElement);
           pathDataPolyfill(window);
       }
   }
@@ -964,7 +967,7 @@
       });
 
       if (props.baseWindow && props.svg) {
-          props.baseWindow.document.getElementById('matchingContainer').removeChild(props.svg);
+          props.baseWindow.document.getElementById('matchingContainer' + instance).removeChild(props.svg);
       }
       props.baseWindow = newWindow;
       setupWindow(newWindow);
@@ -1110,8 +1113,8 @@
       } else if (!props.isShown) {
           svg.style.visibility = 'hidden';
       }
-
-      baseDocument.getElementById('matchingContainer').appendChild(svg);
+      console.log('matching' + instance);
+      baseDocument.getElementById('matchingContainer' + instance).appendChild(svg);
 
       // label (after appendChild(svg), bBox is used)
       [0, 1, 2].forEach(function (i) {
@@ -1124,7 +1127,7 @@
 
       traceLog.add('</bindWindow>'); // [DEBUG/]
   }
-  baseDocument.getElementById('matchingContainer').bindWindow = bindWindow; // [DEBUG/]
+  baseDocument.getElementById('matchingContainer' + instance).bindWindow = bindWindow; // [DEBUG/]
 
   /**
    * @param {props} props - `props` of `LeaderLine` instance.
@@ -2506,6 +2509,7 @@
         plugOutlineColorSE      startPlugOutlineColor, endPlugOutlineColor
         plugOutlineSizeSE       startPlugOutlineSize, endPlugOutlineSize
         labelSEM                startLabel, endLabel, middleLabel
+        instance                instanceNumber   
       */
       var options = props.options,
           newWindow, needsWindow, needs = {};
@@ -3357,6 +3361,8 @@
    * @param {Object} [options] - Initial options.
    */
   function LeaderLine(start, end, options) {
+      console.log(options);
+      instance = options.instance;
       var props = {
           // Initialize properties as array.
           options: {
@@ -3526,7 +3532,7 @@
       props.attachments.slice().forEach(function (attachProps) { unbindAttachment(props, attachProps); });
 
       if (props.baseWindow && props.svg) {
-          props.baseWindow.document.getElementById('matchingContainer').removeChild(props.svg);
+          props.baseWindow.document.getElementById('matchingContainer' + instance).removeChild(props.svg);
       }
       delete insProps[this._id];
   };
@@ -3674,8 +3680,8 @@
               var props = boundTarget.props, newOptions = {}, element = attachProps.element,
                   another = props.options.anchorSE[boundTarget.optionName === 'start' ? 1 : 0];
               if (element === another) { // must be not another
-                  element = another === document.getElementById('matchingContainer') ?
-                      new LeaderLineAttachment(ATTACHMENTS.pointAnchor, [element]) : document.getElementById('matchingContainer');
+                  element = another === document.getElementById('matchingContainer' + instance) ?
+                      new LeaderLineAttachment(ATTACHMENTS.pointAnchor, [element]) : document.getElementById('matchingContainer' + instance);
               }
               newOptions[boundTarget.optionName] = element;
               setOptions(props, newOptions);
@@ -3704,7 +3710,7 @@
 
           checkElement: function (element) {
               if (element == null) {
-                  element = document.getElementById('matchingContainer');
+                  element = document.getElementById('matchingContainer' + instance);
               } else if (!isElement(element)) {
                   throw new Error('`element` must be Element');
               }
@@ -3784,7 +3790,8 @@
               attachProps.path.style.fill = attachProps.fill || 'none';
               attachProps.isShown = false;
               svg.style.visibility = 'hidden';
-              baseDocument.getElementById('matchingContainer').appendChild(svg);
+              console.log('matching' + instance);
+              baseDocument.getElementById('matchingContainer' + instance).appendChild(svg);
               setupWindow((window = baseDocument.defaultView));
               attachProps.bodyOffset = getBodyOffset(window); // Get `bodyOffset`
 
